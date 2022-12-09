@@ -11,11 +11,19 @@ pipeline {
                 echo "Database engine is ${DB_ENGINE}"
                 echo "DISABLE_AUTH is ${DISABLE_AUTH}"
                 sh 'printenv'
+                sh 'sudo ./env.sh'
             }
         }
         stage('Test') {
+            environment {
+                CC = """${sh(
+                    returnStdout: true,
+                    script: 'echo $SECRET_VALUE'
+                )}"""
+            }
             steps {
                 echo 'Testing'
+                echo $CC
             }
         }
         stage('Sanity check') {
